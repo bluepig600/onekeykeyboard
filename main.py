@@ -25,10 +25,31 @@ def win32_event_filter(msg, data):
 listener = keyboard.Listener(on_press=pressed,on_release=released,win32_event_filter=win32_event_filter)
 listener.start()
 times = 0
+hold = False
+actions = []
+happening = False
+def action(numOfSpaces):
+    pass
+def holding(secs):
+    pass
 while True:
-    if len(spacetimes) > 0:
+    happening = len(spacetimes) > 0
+    if happening:
         times = time.time() - spacetimes[-1]
+        if len(spacetimes) > 1:
+            if spacetimes[-1]-spacetimes[-2] < 0.05:
+                hold = True
     if times > 0.3:
-        print(len(spacetimes))
+        if hold:
+            secs = spacetimes[-1]-spacetimes[0]
+            print("hold " + str(secs) + " seconds")
+            holding(secs)
+        else:
+            amount = len(spacetimes)
+            print(amount)
+            action(amount)
+
         spacetimes.clear()
         times = 0
+        hold = False
+
