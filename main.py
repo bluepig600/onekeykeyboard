@@ -4,7 +4,7 @@ import time
 control = keyboard.Controller()
 Key = keyboard.Key
 ignore = False
-spacetimes = []
+spaceTimes = []
 
 def pressed(key):
     global ignore
@@ -19,7 +19,7 @@ def win32_event_filter(msg, data):
     #print(msg, data.vkCode)
     if data.vkCode == 32 and not ignore:
         if msg != 257:
-            spacetimes.append(time.time())
+            spaceTimes.append(time.time())
         #print("space blocked")
         listener.suppress_event()
 listener = keyboard.Listener(on_press=pressed,on_release=released,win32_event_filter=win32_event_filter)
@@ -28,28 +28,34 @@ times = 0
 hold = False
 actions = []
 happening = False
+holdingMaybe = 0
 def action(numOfSpaces):
-    pass
+    actions.append((0,numOfSpaces))
 def holding(secs):
-    pass
+    actions.append((1,secs))
+    if actions[-2][0] == 0 and actions[-2][1] == 1:
+        actions.pop(-2)
 while True:
-    happening = len(spacetimes) > 0
+    happening = len(spaceTimes) > 0
     if happening:
-        times = time.time() - spacetimes[-1]
-        if len(spacetimes) > 1:
-            if spacetimes[-1]-spacetimes[-2] < 0.05:
+        times = time.time() - spaceTimes[-1]
+        if len(spaceTimes) > 1:
+            if spaceTimes[-1]-spaceTimes[-2] < 0.05 and not hold:
                 hold = True
     if times > 0.3:
         if hold:
-            secs = spacetimes[-1]-spacetimes[0]
+            secs = time.time() - holdingMaybe - times
             print("hold " + str(secs) + " seconds")
+            print(holdingMaybe)
             holding(secs)
+            holdingMaybe = 0
         else:
-            amount = len(spacetimes)
+            amount = len(spaceTimes)
             print(amount)
             action(amount)
+            if amount == 1:
+                holdingMaybe = spaceTimes[0]
 
-        spacetimes.clear()
+        spaceTimes.clear()
         times = 0
         hold = False
-
