@@ -32,9 +32,9 @@ holdingMaybe = 0
 def action(numOfSpaces):
     actions.append((0,numOfSpaces))
 def holding(secs):
-    actions.append((1,secs))
-    if actions[-2][0] == 0 and actions[-2][1] == 1:
-        actions.pop(-2)
+    actions.append((1,secs,actions[-1][1]))
+    actions.pop(-2)
+    print(actions)
 while True:
     happening = len(spaceTimes) > 0
     if happening:
@@ -45,16 +45,14 @@ while True:
     if times > 0.3:
         if hold:
             secs = time.time() - holdingMaybe - times
-            print("hold " + str(secs) + " seconds")
-            print(holdingMaybe)
+            #print("hold " + str(secs) + " seconds")
             holding(secs)
             holdingMaybe = 0
         else:
             amount = len(spaceTimes)
             print(amount)
             action(amount)
-            if amount == 1:
-                holdingMaybe = spaceTimes[0]
+            holdingMaybe = spaceTimes[-1]
 
         spaceTimes.clear()
         times = 0
