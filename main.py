@@ -94,7 +94,7 @@ def keyboardthing():
     
 def keyboardthing2():
     global actions, hold, i, ignore
-    print("testing hold")
+    #print("testing hold")
     if hold: 
         #print("leave")
         root.after(100, keyboardthing)
